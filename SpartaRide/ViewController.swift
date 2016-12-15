@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var routeSelectButton: UIButton!
     
+    @IBOutlet weak var stopsToggleButton: UIButton!
+    
     @IBOutlet weak var mapView: GMSMapView!
     
     override func viewDidLoad() {
@@ -30,10 +32,18 @@ class ViewController: UIViewController {
         routeSelectButton.clipsToBounds = true
         view.addSubview(routeSelectButton)
         
+        stopsToggleButton.layer.cornerRadius = 0.5 * stopsToggleButton.bounds.size.width
+        stopsToggleButton.clipsToBounds = true
+        view.addSubview(stopsToggleButton)
+        
+    }
+    
+    @IBAction func stopToggleButtonClick(_ sender: Any) {
+        print("STOPS TOGGLE")
     }
     
     @IBAction func routeSelectButtonClick(_ sender: Any) {
-        print("CLICK")
+        print("ROUTE SELECT")
     }
     
     override func viewDidLayoutSubviews() {
