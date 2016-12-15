@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="SpartaRide" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Tj-Ar-bYu" userLabel="mapView" customClass="GMSMapView">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mg4-68-CaQ">
+                                <rect key="frame" x="147" y="567" width="80" height="80"/>
+                                <color key="backgroundColor" red="0.10196078431372549" green="0.27058823529411763" blue="0.23137254901960785" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="80" id="aDN-WL-ajG"/>
+                                    <constraint firstAttribute="height" constant="80" id="caV-67-xBJ"/>
+                                </constraints>
+                                <state key="normal" title="#">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="routeSelectButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vDH-Tw-yg5"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="2Tj-Ar-bYu" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ibb-4d-upb"/>
+                            <constraint firstItem="Mg4-68-CaQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="X5M-V7-B5N"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Mg4-68-CaQ" secondAttribute="bottom" constant="20" id="ZP9-cZ-GM5"/>
+                            <constraint firstAttribute="trailing" secondItem="2Tj-Ar-bYu" secondAttribute="trailing" id="dhb-A5-YIt"/>
+                            <constraint firstItem="2Tj-Ar-bYu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="fKX-qC-ZHK"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Tj-Ar-bYu" secondAttribute="bottom" id="oFl-6y-ZxB"/>
+                            <constraint firstItem="2Tj-Ar-bYu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="oHM-2e-4rB"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Tj-Ar-bYu" secondAttribute="bottom" id="ybh-9M-8sH"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="2Tj-Ar-bYu" id="h0N-zn-fDz"/>
+                        <outlet property="routeSelectButton" destination="Mg4-68-CaQ" id="nle-Y0-eZe"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="40.799999999999997" y="42.728635682158924"/>
+        </scene>
+    </scenes>
+</document>
