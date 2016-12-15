@@ -5,6 +5,7 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -31,11 +32,23 @@
                                     <constraint firstAttribute="width" constant="80" id="aDN-WL-ajG"/>
                                     <constraint firstAttribute="height" constant="80" id="caV-67-xBJ"/>
                                 </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="32"/>
                                 <state key="normal" title="#">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
                                     <action selector="routeSelectButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="vDH-Tw-yg5"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h0d-nD-cDs" userLabel="Stops Toggle Button">
+                                <rect key="frame" x="319" y="607" width="40" height="40"/>
+                                <color key="backgroundColor" red="0.10196078431372549" green="0.27058823529411763" blue="0.23137254901960785" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="Ata-Ph-BWZ"/>
+                                    <constraint firstAttribute="height" constant="40" id="CV7-MT-Kl7"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="stopToggleButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ycf-P1-lyd"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -47,13 +60,14 @@
                             <constraint firstAttribute="trailing" secondItem="2Tj-Ar-bYu" secondAttribute="trailing" id="dhb-A5-YIt"/>
                             <constraint firstItem="2Tj-Ar-bYu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="fKX-qC-ZHK"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Tj-Ar-bYu" secondAttribute="bottom" id="oFl-6y-ZxB"/>
-                            <constraint firstItem="2Tj-Ar-bYu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="oHM-2e-4rB"/>
-                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Tj-Ar-bYu" secondAttribute="bottom" id="ybh-9M-8sH"/>
+                            <constraint firstItem="h0d-nD-cDs" firstAttribute="top" secondItem="Mg4-68-CaQ" secondAttribute="bottom" constant="-40" id="xpV-sY-PuB"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="h0d-nD-cDs" secondAttribute="trailing" id="zaj-XL-oOq"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="2Tj-Ar-bYu" id="h0N-zn-fDz"/>
                         <outlet property="routeSelectButton" destination="Mg4-68-CaQ" id="nle-Y0-eZe"/>
+                        <outlet property="stopsToggleButton" destination="h0d-nD-cDs" id="k6T-m6-2AK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
