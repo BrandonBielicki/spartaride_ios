@@ -76,10 +76,14 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         pickerContainerView.isHidden = true
     }
     
-    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        let titleData = routeNumbers[row]
-        let myTitle = NSAttributedString(string: titleData, attributes: [NSFontAttributeName:UIFont.boldSystemFont(ofSize: 35.0),NSForegroundColorAttributeName:UIColor.white])
-        return myTitle
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView
+    {
+        let pickerLabel = UILabel()
+        pickerLabel.textColor = UIColor.white
+        pickerLabel.text = routeNumbers[row]
+        pickerLabel.font = UIFont.boldSystemFont(ofSize: 35.0)
+        pickerLabel.textAlignment = NSTextAlignment.center
+        return pickerLabel
     }
 
 }
