@@ -45,11 +45,10 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     }
     
     @IBAction func stopToggleButtonClick(_ sender: Any) {
-        print("STOPS TOGGLE")
+        
     }
     
     @IBAction func routeSelectButtonClick(_ sender: Any) {
-        print("ROUTE SELECT")
         pickerContainerView.isHidden = false
     }
     
@@ -58,15 +57,12 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         // Dispose of any resources that can be recreated.
     }
 
-    //MARK: - Delegates and data sources
-    //MARK: Data Sources
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return routeNumbers.count
     }
-    //MARK: Delegates
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return routeNumbers[row]
     }
