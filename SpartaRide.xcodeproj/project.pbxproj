@@ -8,9 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		284266863F7E389DE415C3D2 /* libPods-SpartaRide.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E51AC9FBC4926E9F6AFFB59 /* libPods-SpartaRide.a */; };
-		CA164C5C1E00F615003B68C2 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA164C5B1E00F615003B68C2 /* ApiKeys.swift */; };
-		CA164C5E1E00F620003B68C2 /* keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA164C5D1E00F620003B68C2 /* keys.plist */; };
-		CA164C601E00F626003B68C2 /* keys.plist.conf in Resources */ = {isa = PBXBuildFile; fileRef = CA164C5F1E00F626003B68C2 /* keys.plist.conf */; };
+		CA164C661E089CED003B68C2 /* ApiKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA164C651E089CED003B68C2 /* ApiKeys.swift */; };
+		CA164C681E089D05003B68C2 /* keys.plist.conf in Resources */ = {isa = PBXBuildFile; fileRef = CA164C671E089D05003B68C2 /* keys.plist.conf */; };
+		CA164C6A1E089D6F003B68C2 /* keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA164C691E089D6F003B68C2 /* keys.plist */; };
+		CA164C6C1E08A182003B68C2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CA164C6B1E08A182003B68C2 /* GoogleService-Info.plist */; };
 		CA8972EA1E00F5100056631F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8972E91E00F5100056631F /* AppDelegate.swift */; };
 		CA8972EC1E00F5100056631F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8972EB1E00F5100056631F /* ViewController.swift */; };
 		CA8972EF1E00F5100056631F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA8972ED1E00F5100056631F /* Main.storyboard */; };
@@ -41,9 +42,10 @@
 		2271CA9D566097767353550B /* Pods-SpartaRide.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpartaRide.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SpartaRide/Pods-SpartaRide.debug.xcconfig"; sourceTree = "<group>"; };
 		607C922A970AD87B4904D877 /* Pods-SpartaRide.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SpartaRide.release.xcconfig"; path = "Pods/Target Support Files/Pods-SpartaRide/Pods-SpartaRide.release.xcconfig"; sourceTree = "<group>"; };
 		8E51AC9FBC4926E9F6AFFB59 /* libPods-SpartaRide.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-SpartaRide.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA164C5B1E00F615003B68C2 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ApiKeys.swift; path = ../../SpartaRide_/SpartaRide/ApiKeys.swift; sourceTree = "<group>"; };
-		CA164C5D1E00F620003B68C2 /* keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = keys.plist; path = ../../SpartaRide_/SpartaRide/keys.plist; sourceTree = "<group>"; };
-		CA164C5F1E00F626003B68C2 /* keys.plist.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = keys.plist.conf; path = ../../SpartaRide_/SpartaRide/keys.plist.conf; sourceTree = "<group>"; };
+		CA164C651E089CED003B68C2 /* ApiKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ApiKeys.swift; sourceTree = "<group>"; };
+		CA164C671E089D05003B68C2 /* keys.plist.conf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = keys.plist.conf; sourceTree = "<group>"; };
+		CA164C691E089D6F003B68C2 /* keys.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = keys.plist; sourceTree = "<group>"; };
+		CA164C6B1E08A182003B68C2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CA8972E61E00F5100056631F /* SpartaRide.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpartaRide.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA8972E91E00F5100056631F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CA8972EB1E00F5100056631F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -127,15 +129,16 @@
 		CA8972E81E00F5100056631F /* SpartaRide */ = {
 			isa = PBXGroup;
 			children = (
+				CA164C6B1E08A182003B68C2 /* GoogleService-Info.plist */,
+				CA164C691E089D6F003B68C2 /* keys.plist */,
+				CA164C671E089D05003B68C2 /* keys.plist.conf */,
+				CA164C651E089CED003B68C2 /* ApiKeys.swift */,
 				CA8972E91E00F5100056631F /* AppDelegate.swift */,
 				CA8972EB1E00F5100056631F /* ViewController.swift */,
 				CA8972ED1E00F5100056631F /* Main.storyboard */,
 				CA8972F01E00F5110056631F /* Assets.xcassets */,
 				CA8972F21E00F5110056631F /* LaunchScreen.storyboard */,
 				CA8972F51E00F5110056631F /* Info.plist */,
-				CA164C5F1E00F626003B68C2 /* keys.plist.conf */,
-				CA164C5D1E00F620003B68C2 /* keys.plist */,
-				CA164C5B1E00F615003B68C2 /* ApiKeys.swift */,
 			);
 			path = SpartaRide;
 			sourceTree = "<group>";
@@ -271,11 +274,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CA164C5E1E00F620003B68C2 /* keys.plist in Resources */,
-				CA164C601E00F626003B68C2 /* keys.plist.conf in Resources */,
+				CA164C6A1E089D6F003B68C2 /* keys.plist in Resources */,
 				CA8972F41E00F5110056631F /* LaunchScreen.storyboard in Resources */,
 				CA8972F11E00F5110056631F /* Assets.xcassets in Resources */,
 				CA8972EF1E00F5100056631F /* Main.storyboard in Resources */,
+				CA164C681E089D05003B68C2 /* keys.plist.conf in Resources */,
+				CA164C6C1E08A182003B68C2 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -350,7 +354,7 @@
 			files = (
 				CA8972EC1E00F5100056631F /* ViewController.swift in Sources */,
 				CA8972EA1E00F5100056631F /* AppDelegate.swift in Sources */,
-				CA164C5C1E00F615003B68C2 /* ApiKeys.swift in Sources */,
+				CA164C661E089CED003B68C2 /* ApiKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
