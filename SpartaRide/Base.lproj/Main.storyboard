@@ -53,14 +53,37 @@
                                     <action selector="stopToggleButtonClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ycf-P1-lyd"/>
                                 </connections>
                             </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7P0-FW-W0c">
+                                <rect key="frame" x="147" y="407" width="80" height="240"/>
+                                <subviews>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MoW-Iq-RdP">
+                                        <rect key="frame" x="0.0" y="12" width="80" height="216"/>
+                                        <color key="backgroundColor" red="0.1019607843" green="0.27058823529999998" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="BYZ-38-t0r" id="WWG-VU-dzv"/>
+                                        </connections>
+                                    </pickerView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.1019607843" green="0.27058823529999998" blue="0.23137254900000001" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="MoW-Iq-RdP" secondAttribute="trailing" id="1dU-83-NRA"/>
+                                    <constraint firstItem="MoW-Iq-RdP" firstAttribute="leading" secondItem="7P0-FW-W0c" secondAttribute="leading" id="BxR-34-dBl"/>
+                                    <constraint firstAttribute="width" constant="80" id="S8I-fq-oIG"/>
+                                    <constraint firstAttribute="height" constant="240" id="V5a-FX-I5b"/>
+                                    <constraint firstItem="MoW-Iq-RdP" firstAttribute="centerY" secondItem="7P0-FW-W0c" secondAttribute="centerY" id="etS-ai-led"/>
+                                    <constraint firstItem="MoW-Iq-RdP" firstAttribute="centerX" secondItem="7P0-FW-W0c" secondAttribute="centerX" id="fK7-sz-SMi"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="2Tj-Ar-bYu" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Ibb-4d-upb"/>
                             <constraint firstItem="Mg4-68-CaQ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="X5M-V7-B5N"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Mg4-68-CaQ" secondAttribute="bottom" constant="20" id="ZP9-cZ-GM5"/>
+                            <constraint firstItem="7P0-FW-W0c" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="cAJ-kS-OO1"/>
                             <constraint firstAttribute="trailing" secondItem="2Tj-Ar-bYu" secondAttribute="trailing" id="dhb-A5-YIt"/>
                             <constraint firstItem="2Tj-Ar-bYu" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="fKX-qC-ZHK"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="7P0-FW-W0c" secondAttribute="bottom" constant="20" id="jrK-9p-Wrj"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="2Tj-Ar-bYu" secondAttribute="bottom" id="oFl-6y-ZxB"/>
                             <constraint firstItem="h0d-nD-cDs" firstAttribute="top" secondItem="Mg4-68-CaQ" secondAttribute="bottom" constant="-40" id="xpV-sY-PuB"/>
                             <constraint firstAttribute="trailingMargin" secondItem="h0d-nD-cDs" secondAttribute="trailing" id="zaj-XL-oOq"/>
@@ -68,6 +91,8 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="2Tj-Ar-bYu" id="h0N-zn-fDz"/>
+                        <outlet property="pickerContainerView" destination="7P0-FW-W0c" id="p22-yM-ky1"/>
+                        <outlet property="routePickerView" destination="MoW-Iq-RdP" id="QhC-n0-xJf"/>
                         <outlet property="routeSelectButton" destination="Mg4-68-CaQ" id="nle-Y0-eZe"/>
                         <outlet property="stopsToggleButton" destination="h0d-nD-cDs" id="k6T-m6-2AK"/>
                     </connections>
