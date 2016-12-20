@@ -36,6 +36,16 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.routePickerView.delegate = self
+        self.routePickerView.dataSource = self
+        pickerContainerView.isHidden = true
+        
+        configureFirebase()
+        configureMap()
+        roundButtons()
+    }
+    
+    func configureFirebase() {
         fbTrips = FIRDatabase.database().reference(withPath: "trips")
         fbStops = FIRDatabase.database().reference(withPath: "stops")
         fbRoot = FIRDatabase.database().reference()
@@ -43,19 +53,15 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         })
         stopsHandle = fbStops.queryOrderedByKey().queryEqual(toValue: "#").observe(FIRDataEventType.value, with: { (snapshot) in
         })
-        
+    }
+    
+    func configureMap() {
         let camera = GMSCameraPosition.camera(withLatitude: 42.7369792, longitude: -84.48386540000001, zoom: 15.0)
         
         mapView.isMyLocationEnabled = true
         mapView.camera = camera
         mapView.settings.rotateGestures = false
         self.mapView.delegate = self
-        
-        self.routePickerView.delegate = self
-        self.routePickerView.dataSource = self
-        pickerContainerView.isHidden = true
-        
-        roundButtons()
     }
     
     func roundButtons() {
