@@ -11,7 +11,7 @@ import GoogleMaps
 import Firebase
 import FirebaseDatabase
 
-class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate {
+class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate,GMSMapViewDelegate {
     
     @IBOutlet weak var routeSelectButton: UIButton!
     @IBOutlet weak var stopsToggleButton: UIButton!
@@ -22,6 +22,8 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     @IBOutlet weak var routePickerView: UIPickerView!
     
     var currentBusMarkers = [GMSMarker]()
+    var currentStopMarkers = [GMSMarker]()
+    var route = ""
     
     let routeNumbers = ["#","01","02","03","05","07","08","09","10","11","12","13","14","15","16","20","22","23","24","25","26","30","31","32","33","34","35","36","39","46","48"]
     
@@ -29,6 +31,7 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     var fbStops: FIRDatabaseReference!
     var fbRoot: FIRDatabaseReference!
     var tripsHandle: FIRDatabaseHandle!
+    var stopsHandle: FIRDatabaseHandle!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,12 +41,24 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         fbRoot = FIRDatabase.database().reference()
         tripsHandle = fbTrips.queryOrdered(byChild: "route").queryEqual(toValue: "#").observe(FIRDataEventType.value, with: { (snapshot) in
         })
+        stopsHandle = fbStops.queryOrderedByKey().queryEqual(toValue: "#").observe(FIRDataEventType.value, with: { (snapshot) in
+        })
         
         let camera = GMSCameraPosition.camera(withLatitude: 42.7369792, longitude: -84.48386540000001, zoom: 15.0)
         
         mapView.isMyLocationEnabled = true
         mapView.camera = camera
+        mapView.settings.rotateGestures = false
+        self.mapView.delegate = self
         
+        self.routePickerView.delegate = self
+        self.routePickerView.dataSource = self
+        pickerContainerView.isHidden = true
+        
+        roundButtons()
+    }
+    
+    func roundButtons() {
         routeSelectButton.layer.cornerRadius = 0.5 * routeSelectButton.bounds.size.width
         routeSelectButton.clipsToBounds = true
         
@@ -52,24 +67,90 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         
         pickerContainerView.layer.cornerRadius = 0.5 * pickerContainerView.bounds.size.width
         pickerContainerView.clipsToBounds = true
+    }
+    
+    func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         
-        self.routePickerView.delegate = self
-        self.routePickerView.dataSource = self
-        pickerContainerView.isHidden = true
+        if(marker.userData as! NSString == "bus") {
+            return true
+        }
+        
+        fbTrips.queryOrdered(byChild: "route").queryEqual(toValue: self.route).observeSingleEvent(of: .value, with: { (snapshot) in
+            var stopTimes = [NSString]()
+            if snapshot.exists() {
+                for trip in snapshot.children {
+                    let trip = trip as! FIRDataSnapshot
+                    let stops = trip.childSnapshot(forPath: "stops")
+                    for stopData in stops.children {
+                        let stopData = stopData as! FIRDataSnapshot
+                        if(stopData.childSnapshot(forPath: "stop_id").value as! NSString == marker.userData as! NSString) {
+                            stopTimes.append(stopData.childSnapshot(forPath: "arrival").value as! NSString)
+                        }
+                    }
+                    
+                }
+                let sortedStopTimes = stopTimes.sorted { $0.localizedCaseInsensitiveCompare($1 as String) == ComparisonResult.orderedAscending }
+                
+                let currentDate = NSDate()
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "hh:mm"
+                let currentTime = dateFormatter.string(from: currentDate as Date)
+                if(sortedStopTimes.count > 0) {
+                    marker.snippet = sortedStopTimes[0] as String
+                    if(sortedStopTimes.count > 1 && currentTime.compare(sortedStopTimes[0] as String) == ComparisonResult.orderedDescending) {
+                        marker.snippet = sortedStopTimes[1] as String
+                    }
+                }
+            }
+        })
+        
+        return false
     }
     
     func clearMap() {
         for item in self.currentBusMarkers {
             item.map = nil
         }
+        for item in self.currentStopMarkers {
+            item.map = nil
+        }
+        
+        self.currentBusMarkers = [GMSMarker]()
+        self.currentStopMarkers = [GMSMarker]()
     }
     
     func displayRoute(route: String){
         routeSelectButton.setTitle(route, for: .normal)
         fbTrips.removeObserver(withHandle: tripsHandle)
-        print(route)
         
-        
+        stopsHandle = fbStops.queryOrderedByKey().queryEqual(toValue: route).observe(FIRDataEventType.value, with: { (snapshot) in
+            if snapshot.exists() {
+                for item in self.currentStopMarkers {
+                    item.map = nil
+                }
+                
+                for route in snapshot.children {
+                    let y = route as! FIRDataSnapshot
+                    for item in y.children {
+                        let x = item as! FIRDataSnapshot
+                        let latitude = (x.childSnapshot(forPath: "latitude").value)
+                        let longitude = (x.childSnapshot(forPath: "longitude").value)
+                        let code = (x.childSnapshot(forPath: "code").value)
+                        
+                        let marker = GMSMarker()
+                        marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((latitude as! NSString).floatValue), longitude: CLLocationDegrees((longitude as! NSString).floatValue))
+                        marker.icon = UIImage(named: "marker_stop_green")
+                        marker.title = "Arriving at:"
+                        marker.snippet = "No Time Available"
+                        marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
+                        marker.userData = code as! NSString
+                        marker.tracksInfoWindowChanges = true
+                        marker.map = self.mapView
+                        self.currentStopMarkers.append(marker)
+                    }
+                }
+            }
+        })
         
         tripsHandle = fbTrips.queryOrdered(byChild: "route").queryEqual(toValue: route).observe(FIRDataEventType.value, with: { (snapshot) in
             if snapshot.exists() {
@@ -85,6 +166,7 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
                     
                     let marker = GMSMarker()
                     marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((latitude as! NSString).floatValue), longitude: CLLocationDegrees((longitude as! NSString).floatValue))
+                    marker.userData = "bus"
                     
                     switch bearing {
                         case "0":
@@ -108,8 +190,6 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
                     }
                     marker.map = self.mapView
                     self.currentBusMarkers.append(marker)
-                    
-                    
                 }
             }
         })
@@ -118,7 +198,18 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     
     
     @IBAction func stopToggleButtonClick(_ sender: Any) {
-        
+        if(currentStopMarkers.count > 0) {
+            if(currentStopMarkers[0].map == nil) {
+                for item in currentStopMarkers {
+                    item.map = mapView
+                }
+            }
+            else {
+                for item in currentStopMarkers {
+                    item.map = nil
+                }
+            }
+        }
     }
     
     @IBAction func routeSelectButtonClick(_ sender: Any) {
@@ -141,8 +232,9 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        displayRoute(route: routeNumbers[row])
         clearMap()
+        displayRoute(route: routeNumbers[row])
+        self.route = routeNumbers[row]
         pickerContainerView.isHidden = true
     }
     
