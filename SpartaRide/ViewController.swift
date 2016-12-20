@@ -79,14 +79,36 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
                 
                 for item in snapshot.children {
                     let x = item as! FIRDataSnapshot
-                    let bearing = (x.childSnapshot(forPath: "bearing").value)
+                    let bearing = (x.childSnapshot(forPath: "bearing").value as! NSString)
                     let latitude = (x.childSnapshot(forPath: "latitude").value)
                     let longitude = (x.childSnapshot(forPath: "longitude").value)
                     
                     let marker = GMSMarker()
                     marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((latitude as! NSString).floatValue), longitude: CLLocationDegrees((longitude as! NSString).floatValue))
+                    
+                    switch bearing {
+                        case "0":
+                            marker.icon = UIImage(named: "marker_bus_green_0")
+                        case "45.0":
+                            marker.icon = UIImage(named: "marker_bus_green_45")
+                        case "90.0":
+                            marker.icon = UIImage(named: "marker_bus_green_90")
+                        case "135.0":
+                            marker.icon = UIImage(named: "marker_bus_green_135")
+                        case "180.0":
+                            marker.icon = UIImage(named: "marker_bus_green_180")
+                        case "225.0":
+                            marker.icon = UIImage(named: "marker_bus_green_225")
+                        case "270.0":
+                            marker.icon = UIImage(named: "marker_bus_green_270")
+                        case "315.0":
+                            marker.icon = UIImage(named: "marker_bus_green_315")
+                        default:
+                            marker.icon = UIImage(named: "marker_bus_green_0")
+                    }
                     marker.map = self.mapView
                     self.currentBusMarkers.append(marker)
+                    
                     
                 }
             }
