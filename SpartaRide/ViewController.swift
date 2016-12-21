@@ -107,6 +107,7 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
                         marker.snippet = sortedStopTimes[1] as String
                     }
                 }
+                marker.infoWindowAnchor = CGPoint(x: 0.5, y: 0.5)
             }
         })
         
