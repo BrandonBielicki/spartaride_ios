@@ -16,9 +16,9 @@
 		CA8972EC1E00F5100056631F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8972EB1E00F5100056631F /* ViewController.swift */; };
 		CA8972EF1E00F5100056631F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA8972ED1E00F5100056631F /* Main.storyboard */; };
 		CA8972F11E00F5110056631F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8972F01E00F5110056631F /* Assets.xcassets */; };
-		CA8972F41E00F5110056631F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CA8972F21E00F5110056631F /* LaunchScreen.storyboard */; };
 		CA8972FF1E00F5110056631F /* SpartaRideTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8972FE1E00F5110056631F /* SpartaRideTests.swift */; };
 		CA89730A1E00F5110056631F /* SpartaRideUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8973091E00F5110056631F /* SpartaRideUITests.swift */; };
+		CAAC29211E0BB0A2009105AC /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CAAC29201E0BB0A1009105AC /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,7 +51,6 @@
 		CA8972EB1E00F5100056631F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		CA8972EE1E00F5100056631F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CA8972F01E00F5110056631F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		CA8972F31E00F5110056631F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CA8972F51E00F5110056631F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CA8972FA1E00F5110056631F /* SpartaRideTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpartaRideTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA8972FE1E00F5110056631F /* SpartaRideTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartaRideTests.swift; sourceTree = "<group>"; };
@@ -59,6 +58,7 @@
 		CA8973051E00F5110056631F /* SpartaRideUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpartaRideUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA8973091E00F5110056631F /* SpartaRideUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartaRideUITests.swift; sourceTree = "<group>"; };
 		CA89730B1E00F5110056631F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CAAC29201E0BB0A1009105AC /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,7 +137,7 @@
 				CA8972EB1E00F5100056631F /* ViewController.swift */,
 				CA8972ED1E00F5100056631F /* Main.storyboard */,
 				CA8972F01E00F5110056631F /* Assets.xcassets */,
-				CA8972F21E00F5110056631F /* LaunchScreen.storyboard */,
+				CAAC29201E0BB0A1009105AC /* Launch Screen.storyboard */,
 				CA8972F51E00F5110056631F /* Info.plist */,
 			);
 			path = SpartaRide;
@@ -232,7 +232,7 @@
 				TargetAttributes = {
 					CA8972E51E00F5100056631F = {
 						CreatedOnToolsVersion = 8.1;
-						DevelopmentTeam = 9TDD3HUBA4;
+						DevelopmentTeam = ADQXTPG2PW;
 						ProvisioningStyle = Automatic;
 					};
 					CA8972F91E00F5110056631F = {
@@ -275,11 +275,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA164C6A1E089D6F003B68C2 /* keys.plist in Resources */,
-				CA8972F41E00F5110056631F /* LaunchScreen.storyboard in Resources */,
 				CA8972F11E00F5110056631F /* Assets.xcassets in Resources */,
 				CA8972EF1E00F5100056631F /* Main.storyboard in Resources */,
 				CA164C681E089D05003B68C2 /* keys.plist.conf in Resources */,
 				CA164C6C1E08A182003B68C2 /* GoogleService-Info.plist in Resources */,
+				CAAC29211E0BB0A2009105AC /* Launch Screen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,14 +398,6 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		CA8972F21E00F5110056631F /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CA8972F31E00F5110056631F /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -507,11 +499,12 @@
 			baseConfigurationReference = 2271CA9D566097767353550B /* Pods-SpartaRide.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 9TDD3HUBA4;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = ADQXTPG2PW;
 				INFOPLIST_FILE = SpartaRide/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = BrandonBielicki.SpartaRide;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brandonbielicki.spartarideapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -522,11 +515,12 @@
 			baseConfigurationReference = 607C922A970AD87B4904D877 /* Pods-SpartaRide.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 9TDD3HUBA4;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = ADQXTPG2PW;
 				INFOPLIST_FILE = SpartaRide/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = BrandonBielicki.SpartaRide;
+				PRODUCT_BUNDLE_IDENTIFIER = com.brandonbielicki.spartarideapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
