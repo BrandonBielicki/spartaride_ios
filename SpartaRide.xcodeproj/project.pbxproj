@@ -59,6 +59,7 @@
 		CA8973091E00F5110056631F /* SpartaRideUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpartaRideUITests.swift; sourceTree = "<group>"; };
 		CA89730B1E00F5110056631F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CAAC29201E0BB0A1009105AC /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "../Launch Screen.storyboard"; sourceTree = "<group>"; };
+		CAFE508B1E0CF3B400AD5A89 /* SpartaRide.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SpartaRide.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +130,7 @@
 		CA8972E81E00F5100056631F /* SpartaRide */ = {
 			isa = PBXGroup;
 			children = (
+				CAFE508B1E0CF3B400AD5A89 /* SpartaRide.entitlements */,
 				CA164C6B1E08A182003B68C2 /* GoogleService-Info.plist */,
 				CA164C691E089D6F003B68C2 /* keys.plist */,
 				CA164C671E089D05003B68C2 /* keys.plist.conf */,
@@ -233,7 +235,12 @@
 					CA8972E51E00F5100056631F = {
 						CreatedOnToolsVersion = 8.1;
 						DevelopmentTeam = ADQXTPG2PW;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 					CA8972F91E00F5110056631F = {
 						CreatedOnToolsVersion = 8.1;
@@ -499,13 +506,17 @@
 			baseConfigurationReference = 2271CA9D566097767353550B /* Pods-SpartaRide.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = SpartaRide/SpartaRide.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: Brandon Bielicki (JH69J3HAZN)";
 				DEVELOPMENT_TEAM = ADQXTPG2PW;
 				INFOPLIST_FILE = SpartaRide/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.brandonbielicki.spartarideapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "c121da8b-f32f-47bd-96d1-6732b6eb06a5";
+				PROVISIONING_PROFILE_SPECIFIER = SpartaRide_dev;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -515,13 +526,17 @@
 			baseConfigurationReference = 607C922A970AD87B4904D877 /* Pods-SpartaRide.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_ENTITLEMENTS = SpartaRide/SpartaRide.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Brandon Bielicki (ADQXTPG2PW)";
 				DEVELOPMENT_TEAM = ADQXTPG2PW;
 				INFOPLIST_FILE = SpartaRide/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.brandonbielicki.spartarideapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "11559f11-f2ee-4fd8-9ea8-840ed2342454";
+				PROVISIONING_PROFILE_SPECIFIER = SpartaRide;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
