@@ -10,8 +10,11 @@ import UIKit
 import GoogleMaps
 import Firebase
 import FirebaseDatabase
+import GoogleMobileAds
 
 class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate,GMSMapViewDelegate {
+    
+    var bannerView: GADBannerView!
     
     @IBOutlet weak var routeSelectButton: UIButton!
     @IBOutlet weak var stopsToggleButton: UIButton!
@@ -25,13 +28,15 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     var currentStopMarkers = [GMSMarker]()
     var route = ""
     
-    let routeNumbers = ["#","01","02","03","05","07","08","09","10","11","12","13","14","15","16","20","22","23","24","25","26","30","31","32","33","34","35","36","39","46","48"]
+    let routeNumbers = ["#","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","22","23","24","25","26","30","31","32","33","34","35","36","39","46","48","261"]
     
     var fbTrips: FIRDatabaseReference!
     var fbStops: FIRDatabaseReference!
+    var fbBuses: FIRDatabaseReference!
     var fbRoot: FIRDatabaseReference!
     var tripsHandle: FIRDatabaseHandle!
     var stopsHandle: FIRDatabaseHandle!
+    var busesHandle: FIRDatabaseHandle!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,12 +45,21 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         self.routePickerView.dataSource = self
         pickerContainerView.isHidden = true
         
+        
         configureFirebase()
         configureMap()
         roundButtons()
+        
+        bannerView = GADBannerView(adSize: kGADAdSizeBanner)
+        addBannerViewToView(bannerView)
+        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.rootViewController = self
+        bannerView.load(GADRequest())
     }
     
+    
     func configureFirebase() {
+        fbBuses = FIRDatabase.database().reference(withPath: "buses")
         fbTrips = FIRDatabase.database().reference(withPath: "trips")
         fbStops = FIRDatabase.database().reference(withPath: "stops")
         fbRoot = FIRDatabase.database().reference()
@@ -75,40 +89,67 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         pickerContainerView.clipsToBounds = true
     }
     
+    func displayBusStops(snapshot: FIRDataSnapshot) {
+        if snapshot.exists() {
+            for item in self.currentStopMarkers {
+                item.map = nil
+            }
+            
+            for route in snapshot.children {
+                for stop in (route as AnyObject).children {
+                    let stop_latitude = ((stop as AnyObject).childSnapshot(forPath: "latitude").value)
+                    let stop_longitude = ((stop as AnyObject).childSnapshot(forPath: "longitude").value)
+                    let stop_id = ((stop as AnyObject).childSnapshot(forPath: "id").value)
+                    //let stop_name = ((stop as AnyObject).childSnapshot(forPath: "name").value)
+                    
+                    let marker = GMSMarker()
+                    marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((stop_latitude as! NSString).floatValue), longitude: CLLocationDegrees((stop_longitude as! NSString).floatValue))
+                    marker.icon = UIImage(named: "marker_stop_green")
+                    marker.title = "Arriving at stop #" + (stop_id as! String) + " at:"
+                    marker.snippet = "No Time Available"
+                    marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
+                    marker.userData = stop_id as! NSString
+                    marker.tracksInfoWindowChanges = true
+                    marker.map = self.mapView
+                    self.currentStopMarkers.append(marker)
+                }
+            }
+        }
+    }
+    
+    func stopClickEvent(snapshot: FIRDataSnapshot, marker: GMSMarker) {
+        var stopTimes = [NSString]()
+
+    
+        for trip in snapshot.childSnapshot(forPath: marker.userData as! String).children {
+            let arrival = ((trip as AnyObject).childSnapshot(forPath: "arrival").value)
+            stopTimes.append(arrival as! String as NSString)
+        }
+        
+        
+        let sortedStopTimes = stopTimes.sorted { $0.localizedCaseInsensitiveCompare($1 as String) == ComparisonResult.orderedAscending }
+        
+        let currentDate = NSDate()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm"
+        let currentTime = dateFormatter.string(from: currentDate as Date)
+        if(sortedStopTimes.count > 0) {
+            marker.snippet = sortedStopTimes[0] as String
+            if(sortedStopTimes.count > 1 && currentTime.compare(sortedStopTimes[0] as String) == ComparisonResult.orderedDescending) {
+                marker.snippet = sortedStopTimes[1] as String
+            }
+        }
+        marker.infoWindowAnchor = CGPoint(x: 0.5, y: 0.5)
+        
+    }
+    
     func mapView(_ mapView: GMSMapView, didTap marker: GMSMarker) -> Bool {
         
         if(marker.userData as! NSString == "bus") {
             return true
         }
-        
-        fbTrips.queryOrdered(byChild: "route").queryEqual(toValue: self.route).observeSingleEvent(of: .value, with: { (snapshot) in
-            var stopTimes = [NSString]()
-            if snapshot.exists() {
-                for trip in snapshot.children {
-                    let trip = trip as! FIRDataSnapshot
-                    let stops = trip.childSnapshot(forPath: "stops")
-                    for stopData in stops.children {
-                        let stopData = stopData as! FIRDataSnapshot
-                        if(stopData.childSnapshot(forPath: "stop_id").value as! NSString == marker.userData as! NSString) {
-                            stopTimes.append(stopData.childSnapshot(forPath: "arrival").value as! NSString)
-                        }
-                    }
-                    
-                }
-                let sortedStopTimes = stopTimes.sorted { $0.localizedCaseInsensitiveCompare($1 as String) == ComparisonResult.orderedAscending }
-                
-                let currentDate = NSDate()
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "hh:mm"
-                let currentTime = dateFormatter.string(from: currentDate as Date)
-                if(sortedStopTimes.count > 0) {
-                    marker.snippet = sortedStopTimes[0] as String
-                    if(sortedStopTimes.count > 1 && currentTime.compare(sortedStopTimes[0] as String) == ComparisonResult.orderedDescending) {
-                        marker.snippet = sortedStopTimes[1] as String
-                    }
-                }
-                marker.infoWindowAnchor = CGPoint(x: 0.5, y: 0.5)
-            }
+        fbTrips.child(route).queryOrderedByKey().queryEqual(toValue: marker.userData).observeSingleEvent(of: .value, with: { (snapshot) in
+            self.stopClickEvent(snapshot: snapshot, marker: marker)
         })
         
         return false
@@ -126,79 +167,61 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         self.currentStopMarkers = [GMSMarker]()
     }
     
+    func busUpdateEvent(snapshot: FIRDataSnapshot) {
+        for item in self.currentBusMarkers {
+            item.map = nil
+        }
+        for bus in snapshot.children {
+            let bus = bus as! FIRDataSnapshot
+            let bearing = (bus.childSnapshot(forPath: "bearing").value as! NSString)
+            let latitude = (bus.childSnapshot(forPath: "latitude").value)
+            let longitude = (bus.childSnapshot(forPath: "longitude").value)
+            
+            let marker = GMSMarker()
+            marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((latitude as! NSString).floatValue), longitude: CLLocationDegrees((longitude as! NSString).floatValue))
+            marker.userData = "bus"
+            
+            switch bearing {
+            case "0":
+                marker.icon = UIImage(named: "marker_bus_green_0")
+            case "45.0":
+                marker.icon = UIImage(named: "marker_bus_green_45")
+            case "90.0":
+                marker.icon = UIImage(named: "marker_bus_green_90")
+            case "135.0":
+                marker.icon = UIImage(named: "marker_bus_green_135")
+            case "180.0":
+                marker.icon = UIImage(named: "marker_bus_green_180")
+            case "225.0":
+                marker.icon = UIImage(named: "marker_bus_green_225")
+            case "270.0":
+                marker.icon = UIImage(named: "marker_bus_green_270")
+            case "315.0":
+                marker.icon = UIImage(named: "marker_bus_green_315")
+            default:
+                marker.icon = UIImage(named: "marker_bus_green_0")
+            }
+            marker.map = self.mapView
+            self.currentBusMarkers.append(marker)
+        }
+    }
+    
     func displayRoute(route: String){
         routeSelectButton.setTitle(route, for: .normal)
         fbTrips.removeObserver(withHandle: tripsHandle)
+        fbBuses.removeObserver(withHandle: busesHandle)
         
-        stopsHandle = fbStops.queryOrderedByKey().queryEqual(toValue: route).observe(FIRDataEventType.value, with: { (snapshot) in
-            if snapshot.exists() {
-                for item in self.currentStopMarkers {
-                    item.map = nil
-                }
-                
-                for route in snapshot.children {
-                    let y = route as! FIRDataSnapshot
-                    for item in y.children {
-                        let x = item as! FIRDataSnapshot
-                        let latitude = (x.childSnapshot(forPath: "latitude").value)
-                        let longitude = (x.childSnapshot(forPath: "longitude").value)
-                        let code = (x.childSnapshot(forPath: "code").value)
-                        
-                        let marker = GMSMarker()
-                        marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((latitude as! NSString).floatValue), longitude: CLLocationDegrees((longitude as! NSString).floatValue))
-                        marker.icon = UIImage(named: "marker_stop_green")
-                        marker.title = "Arriving at:"
-                        marker.snippet = "No Time Available"
-                        marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-                        marker.userData = code as! NSString
-                        marker.tracksInfoWindowChanges = true
-                        marker.map = self.mapView
-                        self.currentStopMarkers.append(marker)
-                    }
-                }
-            }
+        fbStops.queryOrderedByKey().queryEqual(toValue: route).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            self.displayBusStops(snapshot: snapshot)
         })
         
-        tripsHandle = fbTrips.queryOrdered(byChild: "route").queryEqual(toValue: route).observe(FIRDataEventType.value, with: { (snapshot) in
-            if snapshot.exists() {
-                for item in self.currentBusMarkers {
-                    item.map = nil
-                }
-                
-                for item in snapshot.children {
-                    let x = item as! FIRDataSnapshot
-                    let bearing = (x.childSnapshot(forPath: "bearing").value as! NSString)
-                    let latitude = (x.childSnapshot(forPath: "latitude").value)
-                    let longitude = (x.childSnapshot(forPath: "longitude").value)
-                    
-                    let marker = GMSMarker()
-                    marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((latitude as! NSString).floatValue), longitude: CLLocationDegrees((longitude as! NSString).floatValue))
-                    marker.userData = "bus"
-                    
-                    switch bearing {
-                        case "0":
-                            marker.icon = UIImage(named: "marker_bus_green_0")
-                        case "45.0":
-                            marker.icon = UIImage(named: "marker_bus_green_45")
-                        case "90.0":
-                            marker.icon = UIImage(named: "marker_bus_green_90")
-                        case "135.0":
-                            marker.icon = UIImage(named: "marker_bus_green_135")
-                        case "180.0":
-                            marker.icon = UIImage(named: "marker_bus_green_180")
-                        case "225.0":
-                            marker.icon = UIImage(named: "marker_bus_green_225")
-                        case "270.0":
-                            marker.icon = UIImage(named: "marker_bus_green_270")
-                        case "315.0":
-                            marker.icon = UIImage(named: "marker_bus_green_315")
-                        default:
-                            marker.icon = UIImage(named: "marker_bus_green_0")
-                    }
-                    marker.map = self.mapView
-                    self.currentBusMarkers.append(marker)
-                }
-            }
+        fbBuses.queryOrderedByKey().queryEqual(toValue: route).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
+            print(snapshot.key)
+            self.busUpdateEvent(snapshot: snapshot.childSnapshot(forPath: route))
+        })
+        
+        busesHandle = fbBuses.queryOrderedByKey().queryEqual(toValue: route).observe(FIRDataEventType.childChanged, with: { (snapshot) in
+            self.busUpdateEvent(snapshot: snapshot)
         })
     }
     
@@ -253,6 +276,27 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         pickerLabel.font = UIFont.boldSystemFont(ofSize: 35.0)
         pickerLabel.textAlignment = NSTextAlignment.center
         return pickerLabel
+    }
+    
+    func addBannerViewToView(_ bannerView: GADBannerView) {
+        bannerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(bannerView)
+        view.addConstraints(
+            [NSLayoutConstraint(item: bannerView,
+                                attribute: .bottom,
+                                relatedBy: .equal,
+                                toItem: bottomLayoutGuide,
+                                attribute: .top,
+                                multiplier: 1,
+                                constant: 0),
+             NSLayoutConstraint(item: bannerView,
+                                attribute: .centerX,
+                                relatedBy: .equal,
+                                toItem: view,
+                                attribute: .centerX,
+                                multiplier: 1,
+                                constant: 0)
+            ])
     }
 
 }
