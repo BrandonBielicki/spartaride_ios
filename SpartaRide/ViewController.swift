@@ -18,8 +18,14 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     
     @IBOutlet weak var routeSelectButton: UIButton!
     @IBOutlet weak var stopsToggleButton: UIButton!
+    @IBOutlet weak var notificationButton: UIButton!
     
+    @IBOutlet weak var notificationMessage: UILabel!
+    @IBOutlet weak var notificationTitle: UILabel!
     @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var notificationView: UIView!
+    
+    @IBOutlet weak var notificationOffButton: UIButton!
     
     @IBOutlet weak var pickerContainerView: UIView!
     @IBOutlet weak var routePickerView: UIPickerView!
@@ -28,18 +34,22 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     var currentStopMarkers = [GMSMarker]()
     var route = ""
     
-    let routeNumbers = ["#","01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","22","23","24","25","26","30","31","32","33","34","35","36","39","46","48","261"]
+    let routeNumbers = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","22","23","24","25","26","30","31","32","33","34","35","36","39","46","48","261"]
     
     var fbTrips: FIRDatabaseReference!
     var fbStops: FIRDatabaseReference!
     var fbBuses: FIRDatabaseReference!
     var fbRoot: FIRDatabaseReference!
-    var tripsHandle: FIRDatabaseHandle!
-    var stopsHandle: FIRDatabaseHandle!
+    var fbNotifications: FIRDatabaseReference!
     var busesHandle: FIRDatabaseHandle!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        notificationView.isHidden = true
+        notificationOffButton.isHidden = true
+        notificationButton.isHidden = true
+        
         
         self.routePickerView.delegate = self
         self.routePickerView.dataSource = self
@@ -50,22 +60,38 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         configureMap()
         roundButtons()
         
+        initNotifications()
+        
         bannerView = GADBannerView(adSize: kGADAdSizeBanner)
         addBannerViewToView(bannerView)
-        bannerView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerView.adUnitID = "ca-app-pub-7940513604745520/4309034775"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
     }
     
+    func initNotifications() {
+        fbNotifications.queryOrderedByKey().observeSingleEvent(of: .value, with: { (snapshot) in
+            for notification in snapshot.children {
+                let notification = notification as! FIRDataSnapshot
+                self.notificationTitle.text = notification.childSnapshot(forPath: "Title").value as! String?
+                self.notificationMessage.text = notification.childSnapshot(forPath: "Message").value as! String?
+                let active_notification = notification.childSnapshot(forPath: "Active").value as! String?
+            
+                if(active_notification == "True") {
+                    self.notificationButton.isHidden = false
+                }
+            }
+        })
+        
+    }
     
     func configureFirebase() {
+        fbNotifications = FIRDatabase.database().reference(withPath: "notifications")
         fbBuses = FIRDatabase.database().reference(withPath: "buses")
         fbTrips = FIRDatabase.database().reference(withPath: "trips")
         fbStops = FIRDatabase.database().reference(withPath: "stops")
         fbRoot = FIRDatabase.database().reference()
-        tripsHandle = fbTrips.queryOrdered(byChild: "route").queryEqual(toValue: "#").observe(FIRDataEventType.value, with: { (snapshot) in
-        })
-        stopsHandle = fbStops.queryOrderedByKey().queryEqual(toValue: "#").observe(FIRDataEventType.value, with: { (snapshot) in
+        busesHandle = fbBuses.queryOrderedByKey().queryEqual(toValue: "00").observe(FIRDataEventType.childChanged, with: { (snapshot) in
         })
     }
     
@@ -75,15 +101,26 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         mapView.isMyLocationEnabled = true
         mapView.camera = camera
         mapView.settings.rotateGestures = false
+        mapView.settings.myLocationButton = true
         self.mapView.delegate = self
     }
     
     func roundButtons() {
+        notificationView.layer.cornerRadius = 25
+        notificationView.layer.borderColor = UIColor.black.cgColor
+        notificationView.layer.borderWidth = 1
+        
+        notificationView.clipsToBounds = true
+        
+        notificationButton.layer.cornerRadius = 0.5 * notificationButton.bounds.size.width
+        notificationButton.clipsToBounds = true
+        
         routeSelectButton.layer.cornerRadius = 0.5 * routeSelectButton.bounds.size.width
         routeSelectButton.clipsToBounds = true
         
         stopsToggleButton.layer.cornerRadius = 0.5 * stopsToggleButton.bounds.size.width
         stopsToggleButton.clipsToBounds = true
+        stopsToggleButton.isHidden = true
         
         pickerContainerView.layer.cornerRadius = 0.5 * pickerContainerView.bounds.size.width
         pickerContainerView.clipsToBounds = true
@@ -208,7 +245,6 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     
     func displayRoute(route: String){
         routeSelectButton.setTitle(route, for: .normal)
-        fbTrips.removeObserver(withHandle: tripsHandle)
         fbBuses.removeObserver(withHandle: busesHandle)
         
         fbStops.queryOrderedByKey().queryEqual(toValue: route).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
@@ -216,7 +252,6 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         })
         
         fbBuses.queryOrderedByKey().queryEqual(toValue: route).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-            print(snapshot.key)
             self.busUpdateEvent(snapshot: snapshot.childSnapshot(forPath: route))
         })
         
@@ -225,7 +260,18 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         })
     }
     
-    
+    @IBAction func notificationOffButtonClick(_ sender: Any) {
+        notificationView.isHidden = true
+        notificationOffButton.isHidden = true
+    }
+    @IBAction func notificationButtonClick(_ sender: Any) {
+        if(notificationView.isHidden) {
+            notificationView.isHidden = false
+        } else {
+            notificationView.isHidden = true
+        }
+        notificationOffButton.isHidden = false
+    }
     
     @IBAction func stopToggleButtonClick(_ sender: Any) {
         if(currentStopMarkers.count > 0) {
@@ -283,10 +329,10 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         view.addSubview(bannerView)
         view.addConstraints(
             [NSLayoutConstraint(item: bannerView,
-                                attribute: .bottom,
-                                relatedBy: .equal,
-                                toItem: bottomLayoutGuide,
                                 attribute: .top,
+                                relatedBy: .equal,
+                                toItem: topLayoutGuide,
+                                attribute: .bottom,
                                 multiplier: 1,
                                 constant: 0),
              NSLayoutConstraint(item: bannerView,
