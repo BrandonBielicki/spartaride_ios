@@ -11,6 +11,7 @@ import GoogleMaps
 import Firebase
 import FirebaseDatabase
 import GoogleMobileAds
+import Foundation
 
 class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelegate,GMSMapViewDelegate {
     
@@ -37,11 +38,11 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
     let routeNumbers = ["01","02","03","04","05","06","07","08","09","10","11","12","13","14","15","16","20","22","23","24","25","26","30","31","32","33","34","35","36","39","46","48","261"]
     
     var fbTrips: FIRDatabaseReference!
-    var fbStops: FIRDatabaseReference!
     var fbBuses: FIRDatabaseReference!
     var fbRoot: FIRDatabaseReference!
     var fbNotifications: FIRDatabaseReference!
     var busesHandle: FIRDatabaseHandle!
+    var stopsDict = Dictionary<String, Any>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,12 +62,23 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         roundButtons()
         
         initNotifications()
+        initStops()
         
         bannerView = GADBannerView(adSize: kGADAdSizeBanner)
         addBannerViewToView(bannerView)
         bannerView.adUnitID = "ca-app-pub-7940513604745520/4309034775"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
+    }
+    
+    func initStops() {
+        do {
+            if let file = Bundle.main.url(forResource: "stops", withExtension: "json") {
+                let data = try? String(contentsOf: file, encoding: .utf8)
+                
+                stopsDict = convertToDictionary(text: data!)!
+            }
+        }
     }
     
     func initNotifications() {
@@ -89,7 +101,6 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         fbNotifications = FIRDatabase.database().reference(withPath: "notifications")
         fbBuses = FIRDatabase.database().reference(withPath: "buses")
         fbTrips = FIRDatabase.database().reference(withPath: "trips")
-        fbStops = FIRDatabase.database().reference(withPath: "stops")
         fbRoot = FIRDatabase.database().reference()
         busesHandle = fbBuses.queryOrderedByKey().queryEqual(toValue: "00").observe(FIRDataEventType.childChanged, with: { (snapshot) in
         })
@@ -126,30 +137,39 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         pickerContainerView.clipsToBounds = true
     }
     
-    func displayBusStops(snapshot: FIRDataSnapshot) {
-        if snapshot.exists() {
-            for item in self.currentStopMarkers {
-                item.map = nil
+    func convertToDictionary(text: String) -> [String: Any]? {
+        if let data = text.data(using: .utf8) {
+            do {
+                return try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+            } catch {
+                print(error.localizedDescription)
             }
-            
-            for route in snapshot.children {
-                for stop in (route as AnyObject).children {
-                    let stop_latitude = ((stop as AnyObject).childSnapshot(forPath: "latitude").value)
-                    let stop_longitude = ((stop as AnyObject).childSnapshot(forPath: "longitude").value)
-                    let stop_id = ((stop as AnyObject).childSnapshot(forPath: "id").value)
-                    //let stop_name = ((stop as AnyObject).childSnapshot(forPath: "name").value)
-                    
-                    let marker = GMSMarker()
-                    marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees((stop_latitude as! NSString).floatValue), longitude: CLLocationDegrees((stop_longitude as! NSString).floatValue))
-                    marker.icon = UIImage(named: "marker_stop_green")
-                    marker.title = "Arriving at stop #" + (stop_id as! String) + " at:"
-                    marker.snippet = "No Time Available"
-                    marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-                    marker.userData = stop_id as! NSString
-                    marker.tracksInfoWindowChanges = true
-                    marker.map = self.mapView
-                    self.currentStopMarkers.append(marker)
-                }
+        }
+        return nil
+    }
+    
+    func displayBusStops(route: String) {
+        for item in self.currentStopMarkers {
+            item.map = nil
+        }
+        
+        if let route = stopsDict[route] as? [String: Any] {
+            for (id, values) in route {
+                let id_values = values as! [String:String]
+                let stop_latitude = id_values["latitude"]
+                let stop_longitude = id_values["longitude"]
+                let stop_id = id
+                
+                let marker = GMSMarker()
+                marker.position = CLLocationCoordinate2D(latitude: CLLocationDegrees(Double(stop_latitude!)!), longitude: CLLocationDegrees(Double(stop_longitude!)!))
+                marker.icon = UIImage(named: "marker_stop_green")
+                marker.title = "Arriving at stop #" + (stop_id) + " at:"
+                marker.snippet = "No Time Available"
+                marker.groundAnchor = CGPoint(x: 0.5, y: 0.5)
+                marker.userData = stop_id
+                marker.tracksInfoWindowChanges = true
+                marker.map = self.mapView
+                self.currentStopMarkers.append(marker)
             }
         }
     }
@@ -247,9 +267,7 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         routeSelectButton.setTitle(route, for: .normal)
         fbBuses.removeObserver(withHandle: busesHandle)
         
-        fbStops.queryOrderedByKey().queryEqual(toValue: route).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
-            self.displayBusStops(snapshot: snapshot)
-        })
+        self.displayBusStops(route: route)
         
         fbBuses.queryOrderedByKey().queryEqual(toValue: route).observeSingleEvent(of: FIRDataEventType.value, with: { (snapshot) in
             self.busUpdateEvent(snapshot: snapshot.childSnapshot(forPath: route))
