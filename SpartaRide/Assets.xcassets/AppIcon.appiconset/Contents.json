@@ -101,6 +101,12 @@
       "idiom" : "ipad",
       "filename" : "ic_launcher_167.png",
       "scale" : "2x"
+    },
+    {
+      "size" : "1024x1024",
+      "idiom" : "ios-marketing",
+      "filename" : "ic_launcher.png",
+      "scale" : "1x"
     }
   ],
   "info" : {

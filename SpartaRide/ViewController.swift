@@ -67,6 +67,7 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         bannerView = GADBannerView(adSize: kGADAdSizeBanner)
         addBannerViewToView(bannerView)
         bannerView.adUnitID = "ca-app-pub-7940513604745520/4309034775"
+        //bannerView.adUnitID = "ca-app-pub-3940256099942544/6300978111"
         bannerView.rootViewController = self
         bannerView.load(GADRequest())
     }
@@ -113,6 +114,7 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         mapView.camera = camera
         mapView.settings.rotateGestures = false
         mapView.settings.myLocationButton = true
+        mapView.padding = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
         self.mapView.delegate = self
     }
     
@@ -347,9 +349,9 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
         view.addSubview(bannerView)
         view.addConstraints(
             [NSLayoutConstraint(item: bannerView,
-                                attribute: .top,
+                                attribute: .bottom,
                                 relatedBy: .equal,
-                                toItem: topLayoutGuide,
+                                toItem: view.safeAreaLayoutGuide,
                                 attribute: .bottom,
                                 multiplier: 1,
                                 constant: 0),
@@ -361,6 +363,25 @@ class ViewController: UIViewController,UIPickerViewDataSource,UIPickerViewDelega
                                 multiplier: 1,
                                 constant: 0)
             ])
+        view.addConstraints(
+            [NSLayoutConstraint(item: pickerContainerView,
+                                attribute: .bottom,
+                                relatedBy: .equal,
+                                toItem: bannerView,
+                                attribute: .top,
+                                multiplier: 1,
+                                constant: 0)
+            ])
+        view.addConstraints(
+            [NSLayoutConstraint(item: notificationButton,
+                                attribute: .bottom,
+                                relatedBy: .equal,
+                                toItem: bannerView,
+                                attribute: .top,
+                                multiplier: 1,
+                                constant: 0)
+            ])
+
     }
 
 }
